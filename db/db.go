@@ -1,4 +1,4 @@
-package model
+package snsdb
 
 import (
 	"log"
