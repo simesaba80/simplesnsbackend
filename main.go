@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 
+	"snsback/controller"
 	snsdb "snsback/db"
 
 	"github.com/labstack/echo/v4"
@@ -22,5 +23,6 @@ func connect(c echo.Context) error {
 func main() {
 	e := echo.New()
 	e.GET("/", connect)
+	e.POST("/users/creatuser", controller.CreateUser)
 	e.Logger.Fatal(e.Start(":8080"))
 }
