@@ -3,7 +3,7 @@ package snsdb
 import "time"
 
 type User struct {
-	ID        uint      `json:"id  param:"id""`
+	ID        uint      `json:"id"  param:"id"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Password  string    `json:"password"`
