@@ -18,7 +18,7 @@ func CreateUser(c echo.Context) error {
 	user := snsdb.User{}
 	if err := c.Bind(&obj); err != nil {
 		//return 400
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		return echo.NewHTTPError(http.StatusBadRequest, "BadRequest")
 	}
 	user.Name = obj.Name
 	user.Email = obj.Email
