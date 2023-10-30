@@ -10,3 +10,9 @@ type User struct {
 	Email    string
 	Password string
 }
+
+type Post struct {
+	gorm.Model
+	Content string
+	UserId  uint
+}
