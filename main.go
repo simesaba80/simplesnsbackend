@@ -24,7 +24,9 @@ func main() {
 	e := echo.New()
 	e.GET("/", connect)
 	e.GET("/users/getusers", controller.GetUsers)
+	e.GET("/users/getuser", controller.GetUser)
 	e.POST("/users/creatuser", controller.CreateUser)
 	e.PUT("/users/updateuser", controller.UpdateUser)
+	e.POST("/posts/createpost", controller.Createpost)
 	e.Logger.Fatal(e.Start(":8080"))
 }
