@@ -29,11 +29,11 @@ func Createpost(c echo.Context) error {
 
 func GetPosts(c echo.Context) error {
 	//専用の返り値を宣言
-	type post struct {
+	type Post struct {
 		Content string `json:"content"`
 		Name    string `json:"name"`
 	}
-	posts := []post{}
+	posts := []Post{}
 	//posts := []snsdb.Post{}
 
 	//TODO: postのUserIdをもとにテーブルを結合し投稿者の名前とpostの内容を取得するSQLをGORMで記述する
