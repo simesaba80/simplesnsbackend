@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"time"
 
 	snsdb "snsback/db"
 
@@ -17,8 +18,10 @@ func Createpost(c echo.Context) error {
 	post := snsdb.Post{}
 	user := snsdb.User{}
 	if err := c.Bind(&obj); err != nil {
-		//return 400
-		return echo.NewHTTPError(http.StatusBadRequest, "BadRequest")
+		// return 400
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "Json Format Error: " + err.Error(),
+		})
 	}
 	snsdb.DB.Where("ID = ?", obj.UserId).First(&user)
 	post.Content = obj.Content
@@ -39,7 +42,7 @@ func GetPosts(c echo.Context) error {
 	//TODO: postのUserIdをもとにテーブルを結合し投稿者の名前とpostの内容を取得するSQLをGORMで記述する
 	//https://gorm.io/ja_JP/docs/query.html#Joins
 	//https://gorm.io/ja_JP/docs/advanced_query.html
-	if err := snsdb.DB.Table("posts").Select("content, users.name").Joins("join users on posts.user_id = users.id").Order("users.created_at ASC").Scan(&posts).Error; err != nil {
+	if err := snsdb.DB.Table("posts").Select("content, users.name").Joins("join users on posts.user_id = users.id").Order("posts.created_at DESC").Scan(&posts).Error; err != nil {
 		//return 500
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": "Database Error: " + err.Error(),
@@ -49,4 +52,37 @@ func GetPosts(c echo.Context) error {
 
 	//postの配列をjsonとして返す
 	return c.JSON(http.StatusOK, posts)
+}
+
+func UpdatePost(c echo.Context) error {
+	type Body struct {
+		PostId     uint   `json:"postid"`
+		Userid     uint   `json:"userid"`
+		NewContent string `json:"newcontent"`
+	}
+
+	obj := Body{}
+	if err := c.Bind(&obj); err != nil {
+		// return 400
+		return c.JSON(http.StatusBadRequest, echo.Map{
+			"message": "Json Format Error: " + err.Error(),
+		})
+	}
+	post := snsdb.Post{}
+	snsdb.DB.Table("posts").Where("ID = ?", obj.PostId).Find(&post)
+	if post.ID == 0 {
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": "Database Error",
+		})
+	}
+	if post.UserId != obj.Userid {
+		return c.JSON(http.StatusUnauthorized, echo.Map{
+			"message": "Unauthorized",
+		})
+	}
+	post.Content = obj.NewContent
+	post.UpdatedAt = time.Now()
+	snsdb.DB.Save(&post)
+	return c.JSON(http.StatusOK, post)
+
 }
