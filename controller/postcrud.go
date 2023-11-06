@@ -37,9 +37,8 @@ func GetPosts(c echo.Context) error {
 		Name    string `json:"name"`
 	}
 	posts := []Post{}
-	//posts := []snsdb.Post{}
 
-	//TODO: postのUserIdをもとにテーブルを結合し投稿者の名前とpostの内容を取得するSQLをGORMで記述する
+	//postのUserIdをもとにテーブルを結合し投稿者の名前とpostの内容を取得するSQLをGORMで記述する
 	//https://gorm.io/ja_JP/docs/query.html#Joins
 	//https://gorm.io/ja_JP/docs/advanced_query.html
 	if err := snsdb.DB.Table("posts").Select("content, users.name").Joins("join users on posts.user_id = users.id").Order("posts.created_at DESC").Scan(&posts).Error; err != nil {
@@ -48,9 +47,6 @@ func GetPosts(c echo.Context) error {
 			"message": "Database Error: " + err.Error(),
 		})
 	}
-	//snsdb.DB.Find(&posts)
-
-	//postの配列をjsonとして返す
 	return c.JSON(http.StatusOK, posts)
 }
 
