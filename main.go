@@ -32,5 +32,6 @@ func main() {
 	e.POST("/posts/createpost", controller.Createpost)
 	e.GET("/posts/getposts", controller.GetPosts)
 	e.PUT("/posts/updatepost", controller.UpdatePost)
+	e.DELETE("/posts/deletepost", controller.DeletePost)
 	e.Logger.Fatal(e.Start(":8080"))
 }
