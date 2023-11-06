@@ -1,18 +1,22 @@
 package snsdb
 
 import (
-	"gorm.io/gorm"
+	"time"
 )
 
 type User struct {
-	gorm.Model
-	Name     string
-	Email    string
-	Password string
+	Id        uint `gorm:"primaryKey"`
+	Name      string
+	Email     string
+	Password  string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Post struct {
-	gorm.Model
-	Content string
-	UserId  uint
+	Id        uint `gorm:"primaryKey"`
+	Content   string
+	UserId    uint
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
