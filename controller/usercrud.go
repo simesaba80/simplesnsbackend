@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"time"
 
 	snsdb "snsback/db"
 
@@ -36,15 +37,13 @@ func GetUsers(c echo.Context) error {
 
 func GetUser(c echo.Context) error {
 	type Body struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
+		Name      string    `json:"name"`
+		CreatedAt time.Time `json:"createdat"`
 	}
-	obj := Body{}
-	user := snsdb.User{}
-	if err := c.Bind(&obj); err != nil {
-		return err
-	}
-	snsdb.DB.Where("Email = ?", obj.Email).Where("Password = ?", obj.Password).First(&user)
+	user := Body{}
+
+	id := c.Param("id")
+	snsdb.DB.Model(&snsdb.User{}).Where("id = ?", id).First(&user)
 
 	return c.JSON(http.StatusOK, user)
 }
