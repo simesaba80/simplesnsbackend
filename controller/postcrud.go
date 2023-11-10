@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Bodyをリクエストボディとして受け取り投稿を作成，IDは昇順
 func Createpost(c echo.Context) error {
 	type Body struct {
 		Content string `json:"content"`
@@ -31,6 +32,7 @@ func Createpost(c echo.Context) error {
 	return c.JSON(http.StatusCreated, post)
 }
 
+// 名前と内容を取得しスライスに格納しjsonで返す
 func GetPosts(c echo.Context) error {
 	//専用の返り値を宣言
 	type Post struct {
@@ -51,6 +53,7 @@ func GetPosts(c echo.Context) error {
 	return c.JSON(http.StatusOK, posts)
 }
 
+// パスパラメータで指定された投稿を取得
 func GetPost(c echo.Context) error {
 	//専用の返り値を宣言
 	type Post struct {
@@ -72,6 +75,7 @@ func GetPost(c echo.Context) error {
 	return c.JSON(http.StatusOK, post)
 }
 
+// パスパラメータで投稿を指定しリクエストボディをもとに更新
 func UpdatePost(c echo.Context) error {
 	type Body struct {
 		Userid     uint   `json:"userid"`
@@ -106,6 +110,7 @@ func UpdatePost(c echo.Context) error {
 
 }
 
+// パスパラメータで投稿を指定しリクエストボディをもとに投稿を削除
 func DeletePost(c echo.Context) error {
 	type Body struct {
 		PostId uint `json:"postid"`
