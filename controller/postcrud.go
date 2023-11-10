@@ -51,6 +51,27 @@ func GetPosts(c echo.Context) error {
 	return c.JSON(http.StatusOK, posts)
 }
 
+func GetPost(c echo.Context) error {
+	//専用の返り値を宣言
+	type Post struct {
+		Content string `json:"content"`
+		Name    string `json:"name"`
+	}
+	post := Post{}
+	id := c.Param("id")
+
+	//postのUserIdをもとにテーブルを結合し投稿者の名前とpostの内容を取得するSQLをGORMで記述する
+	//https://gorm.io/ja_JP/docs/query.html#Joins
+	//https://gorm.io/ja_JP/docs/advanced_query.html
+	if err := snsdb.DB.Table("posts").Select("content, users.name").Joins("join users on posts.user_id = users.id").Where("posts.id = ?", id).Order("posts.created_at DESC").Scan(&post).Error; err != nil {
+		//return 500
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": "Database Error: " + err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, post)
+}
+
 func UpdatePost(c echo.Context) error {
 	type Body struct {
 		PostId     uint   `json:"postid"`

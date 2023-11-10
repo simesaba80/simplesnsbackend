@@ -32,6 +32,7 @@ func main() {
 	//postcrud
 	e.POST("/posts/createpost", controller.Createpost)
 	e.GET("/posts/getposts", controller.GetPosts)
+	e.GET("/posts/getpost/:id", controller.GetPost)
 	e.PUT("/posts/updatepost", controller.UpdatePost)
 	e.DELETE("/posts/deletepost", controller.DeletePost)
 	e.Logger.Fatal(e.Start(":8080"))
