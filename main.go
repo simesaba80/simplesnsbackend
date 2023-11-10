@@ -25,7 +25,7 @@ func main() {
 	e.GET("/", connect)
 	//usercrud
 	e.GET("/users/getusers", controller.GetUsers)
-	e.GET("/users/getuser", controller.GetUser)
+	e.GET("/users/getuser/:id", controller.GetUser)
 	e.POST("/users/creatuser", controller.CreateUser)
 	e.PUT("/users/updateuser", controller.UpdateUser)
 	e.POST("/users/login", controller.Login)
