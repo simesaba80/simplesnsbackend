@@ -74,11 +74,11 @@ func GetPost(c echo.Context) error {
 
 func UpdatePost(c echo.Context) error {
 	type Body struct {
-		PostId     uint   `json:"postid"`
 		Userid     uint   `json:"userid"`
 		NewContent string `json:"newcontent"`
 	}
 
+	id := c.Param("id")
 	obj := Body{}
 	if err := c.Bind(&obj); err != nil {
 		// return 400
@@ -86,8 +86,9 @@ func UpdatePost(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
+
 	post := snsdb.Post{}
-	snsdb.DB.Table("posts").Where("ID = ?", obj.PostId).Find(&post)
+	snsdb.DB.Table("posts").Where("ID = ?", id).Find(&post)
 	if post.Id == 0 {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": "Database Error",
