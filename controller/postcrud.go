@@ -113,9 +113,9 @@ func UpdatePost(c echo.Context) error {
 // パスパラメータで投稿を指定しリクエストボディをもとに投稿を削除
 func DeletePost(c echo.Context) error {
 	type Body struct {
-		PostId uint `json:"postid"`
 		UserId uint `json:"userid"`
 	}
+	id := c.Param("id")
 	obj := Body{}
 	if err := c.Bind(&obj); err != nil {
 		// return 400
@@ -124,7 +124,7 @@ func DeletePost(c echo.Context) error {
 		})
 	}
 	post := snsdb.Post{}
-	if err := snsdb.DB.Where("ID = ?", obj.PostId).First(&post).Error; err != nil {
+	if err := snsdb.DB.Where("ID = ?", id).First(&post).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
