@@ -25,7 +25,7 @@ func Createpost(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
-	snsdb.DB.Where("ID = ?", obj.UserId).First(&user)
+	snsdb.DB.Where("id = ?", obj.UserId).First(&user)
 	post.Content = obj.Content
 	post.UserId = user.Id
 	snsdb.DB.Create(&post)
@@ -92,7 +92,7 @@ func UpdatePost(c echo.Context) error {
 	}
 
 	post := snsdb.Post{}
-	snsdb.DB.Table("posts").Where("ID = ?", id).Find(&post)
+	snsdb.DB.Table("posts").Where("id = ?", id).Find(&post)
 	if post.Id == 0 {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": "Database Error",
@@ -124,7 +124,7 @@ func DeletePost(c echo.Context) error {
 		})
 	}
 	post := snsdb.Post{}
-	if err := snsdb.DB.Where("ID = ?", id).First(&post).Error; err != nil {
+	if err := snsdb.DB.Where("id = ?", id).First(&post).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
