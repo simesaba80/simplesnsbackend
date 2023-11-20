@@ -19,4 +19,5 @@ func init() {
 	}
 	DB.AutoMigrate(&User{})
 	DB.AutoMigrate(&Post{})
+	DB.AutoMigrate(&Friend{})
 }

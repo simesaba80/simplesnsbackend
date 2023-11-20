@@ -23,7 +23,7 @@ type Post struct { //コメントはDB内のカラム名
 }
 
 type Friend struct {
-	UserID    uint
-	FriendID  uint
-	Requested bool
+	Id       uint `gorm:"primaryKey"`
+	UserID   uint
+	FriendID uint
 }

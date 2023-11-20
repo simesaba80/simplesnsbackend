@@ -35,5 +35,8 @@ func main() {
 	e.GET("/posts/getpost/:id", controller.GetPost)
 	e.PUT("/posts/updatepost/:id", controller.UpdatePost)
 	e.DELETE("/posts/deletepost/:id", controller.DeletePost)
+	//friendcrud
+	e.POST("/friends/sendfollow", controller.Sendfollow)
+	e.GET("/friends/getfriends/:userid", controller.GetFriends)
 	e.Logger.Fatal(e.Start(":8080"))
 }
