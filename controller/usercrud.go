@@ -64,7 +64,7 @@ func UpdateUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "BadRequest")
 	}
 	var user snsdb.User
-	snsdb.DB.Where("Email = ?", obj.Email).Where("Password = ?", obj.Password).First(&user)
+	snsdb.DB.Where("email = ?", obj.Email).Where("password = ?", obj.Password).First(&user)
 
 	snsdb.DB.Model(&user).Updates(snsdb.User{Name: obj.ReName, Email: obj.ReEmail, Password: obj.RePassword})
 	return c.JSON(http.StatusOK, user)
