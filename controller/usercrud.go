@@ -13,6 +13,7 @@ import (
 func CreateUser(c echo.Context) error {
 	type Body struct {
 		Name     string `json:"name"`
+		UserID   string `json:"userid"`
 		Email    string `json:"email"`
 		Password string `json:"Password"`
 	}
@@ -23,6 +24,7 @@ func CreateUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "BadRequest")
 	}
 	user.Name = obj.Name
+	user.UserID = obj.UserID
 	user.Email = obj.Email
 	user.Password = obj.Password
 	snsdb.DB.Create(&user)
@@ -38,12 +40,13 @@ func GetUsers(c echo.Context) error {
 func GetUser(c echo.Context) error {
 	type Body struct {
 		Name      string    `json:"name"`
+		UserID    string    `json:"userid"`
 		CreatedAt time.Time `json:"createdat"`
 	}
 	user := Body{}
 
-	id := c.Param("id")
-	snsdb.DB.Model(&snsdb.User{}).Where("id = ?", id).First(&user)
+	user.UserID = c.Param("userid")
+	snsdb.DB.Model(&snsdb.User{}).Where("user_id = ?", user.UserID).First(&user)
 
 	return c.JSON(http.StatusOK, user)
 }
@@ -61,7 +64,7 @@ func UpdateUser(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, "BadRequest")
 	}
 	var user snsdb.User
-	snsdb.DB.Where("Email = ?", obj.Email).Where("Password = ?", obj.Password).First(&user)
+	snsdb.DB.Where("email = ?", obj.Email).Where("password = ?", obj.Password).First(&user)
 
 	snsdb.DB.Model(&user).Updates(snsdb.User{Name: obj.ReName, Email: obj.ReEmail, Password: obj.RePassword})
 	return c.JSON(http.StatusOK, user)
