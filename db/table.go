@@ -20,3 +20,8 @@ type Post struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+
+type Friend struct {
+	UserID   uint
+	FriendID uint
+}
