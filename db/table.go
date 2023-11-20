@@ -23,6 +23,7 @@ type Post struct { //コメントはDB内のカラム名
 }
 
 type Friend struct {
-	UserID   uint
-	FriendID uint
+	UserID    uint
+	FriendID  uint
+	Requested bool
 }
