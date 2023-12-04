@@ -11,7 +11,7 @@ import (
 )
 
 // Bodyをリクエストボディとして受け取り投稿を作成，IDは昇順
-func Createpost(c echo.Context) error {
+func CreatePost(c echo.Context) error {
 	type Body struct {
 		Content string `json:"content"`
 		UserId  uint   `json:"userid"`

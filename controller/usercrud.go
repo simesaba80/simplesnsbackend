@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// Bodyをもとにユーザーを作成
 func CreateUser(c echo.Context) error {
 	type Body struct {
 		Name     string `json:"name"`
@@ -31,12 +32,14 @@ func CreateUser(c echo.Context) error {
 	return c.JSON(http.StatusCreated, user)
 }
 
+// 全ユーザーを取得
 func GetUsers(c echo.Context) error {
 	users := []snsdb.User{}
 	snsdb.DB.Find(&users)
 	return c.JSON(http.StatusOK, users)
 }
 
+// パスパラメータのユーザーIDをもとにユーザーを指定しBody型の構造体に入れて返す
 func GetUser(c echo.Context) error {
 	type Body struct {
 		Name      string    `json:"name"`
@@ -51,6 +54,7 @@ func GetUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
+// リクエストボディのメアドとパスワードでユーザーを指定し、名前メアドパスワードを更新
 func UpdateUser(c echo.Context) error {
 	type Body struct {
 		Email      string `json:"Email"`
@@ -70,6 +74,7 @@ func UpdateUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, user)
 }
 
+// メアドとパスワードでユーザーを指定しIDを返す
 func Login(c echo.Context) error {
 	type Body struct {
 		Email    string `json:"email"`

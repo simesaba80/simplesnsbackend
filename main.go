@@ -17,14 +17,14 @@ func main() {
 	e.PUT("/users/updateuser", controller.UpdateUser)
 	e.POST("/users/login", controller.Login)
 	//postcrud
-	e.POST("/posts/createpost", controller.Createpost)
+	e.POST("/posts/createpost", controller.CreatePost)
 	e.GET("/posts/getposts", controller.GetPosts)
 	e.GET("/posts/getpost/:id", controller.GetPost)
 	e.PUT("/posts/updatepost/:id", controller.UpdatePost)
 	e.DELETE("/posts/deletepost/:id", controller.DeletePost)
 	//friendcrud
-	e.POST("/friends/sendfollow", controller.Sendfollow)
-	e.GET("/friends/getfriends/:userid", controller.GetFriends)
+	e.POST("/friends/sendfollow", controller.SendFollow)
+	e.GET("/friends/getfriends/:userid", controller.GetFollowList)
 	e.DELETE("/friends/deletefollow", controller.DeleteFollow)
 	e.Logger.Fatal(e.Start(":8080"))
 }

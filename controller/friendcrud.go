@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Sendfollow(c echo.Context) error {
+func SendFollow(c echo.Context) error {
 	type Body struct {
 		UserId   string `json:"userid"`
 		FriendId string `json:"friendid"`
@@ -65,7 +65,7 @@ func Sendfollow(c echo.Context) error {
 	})
 }
 
-func GetFriends(c echo.Context) error {
+func GetFollowList(c echo.Context) error {
 	userid := c.Param("userid")
 	user := snsdb.User{}
 	if err := snsdb.DB.Where("user_id = ?", userid).First(&user).Error; err != nil {
