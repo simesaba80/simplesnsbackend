@@ -38,5 +38,6 @@ func main() {
 	//friendcrud
 	e.POST("/friends/sendfollow", controller.Sendfollow)
 	e.GET("/friends/getfriends/:userid", controller.GetFriends)
+	e.DELETE("/friends/deletefollow", controller.DeleteFollow)
 	e.Logger.Fatal(e.Start(":8080"))
 }
