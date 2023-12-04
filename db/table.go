@@ -21,3 +21,9 @@ type Post struct { //コメントはDB内のカラム名
 	CreatedAt time.Time //created_at
 	UpdatedAt time.Time //updated_at
 }
+
+type Friend struct {
+	Id       uint `gorm:"primaryKey"`
+	UserID   uint
+	FriendID uint
+}
