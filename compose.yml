@@ -10,7 +10,8 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     volumes:
       - .:/app
 
@@ -27,6 +28,11 @@ services:
       MYSQL_DATABASE: "test"
       MYSQL_USER: "tester"
       MYSQL_PASSWORD: "password"
+    healthcheck:
+      test: "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD"
+      timeout: 5s
+      interval: 5s
+      retries: 10
     volumes:
       - type: volume
         source: mysql_data
