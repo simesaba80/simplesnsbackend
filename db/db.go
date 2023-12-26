@@ -3,6 +3,8 @@ package db
 import (
 	"log"
 
+	"snsback/utils/config"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -12,7 +14,7 @@ var err error
 
 func Init() {
 	//todo 接続文字列を.envファイルにうつす
-	dsn := "tester:password@tcp(db:3306)/test?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := config.MysqlTestUser + ":" + config.MysqlPassword + config.Mysqlconfig
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalln(dsn + "database can't connect")
