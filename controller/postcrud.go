@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	snsdb "snsback/db"
+	"snsback/db"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -17,18 +17,18 @@ func CreatePost(c echo.Context) error {
 		UserId  uint   `json:"userid"`
 	}
 	obj := Body{}
-	post := snsdb.Post{}
-	user := snsdb.User{}
+	post := db.Post{}
+	user := db.User{}
 	if err := c.Bind(&obj); err != nil {
 		// return 400
 		return c.JSON(http.StatusBadRequest, echo.Map{
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
-	snsdb.DB.Where("id = ?", obj.UserId).First(&user)
+	db.DB.Where("id = ?", obj.UserId).First(&user)
 	post.Content = obj.Content
 	post.UserId = user.Id
-	snsdb.DB.Create(&post)
+	db.DB.Create(&post)
 	return c.JSON(http.StatusCreated, post)
 }
 
@@ -44,7 +44,7 @@ func GetPosts(c echo.Context) error {
 	//postのUserIdをもとにテーブルを結合し投稿者の名前とpostの内容を取得するSQLをGORMで記述する
 	//https://gorm.io/ja_JP/docs/query.html#Joins
 	//https://gorm.io/ja_JP/docs/advanced_query.html
-	if err := snsdb.DB.Table("posts").Select("content, users.name").Joins("join users on posts.user_id = users.id").Order("posts.created_at DESC").Scan(&posts).Error; err != nil {
+	if err := db.DB.Table("posts").Select("content, users.name").Joins("join users on posts.user_id = users.id").Order("posts.created_at DESC").Scan(&posts).Error; err != nil {
 		//return 500
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": "Database Error: " + err.Error(),
@@ -66,7 +66,7 @@ func GetPost(c echo.Context) error {
 	//postのUserIdをもとにテーブルを結合し投稿者の名前とpostの内容を取得するSQLをGORMで記述する
 	//https://gorm.io/ja_JP/docs/query.html#Joins
 	//https://gorm.io/ja_JP/docs/advanced_query.html
-	if err := snsdb.DB.Table("posts").Select("content, users.name").Joins("join users on posts.user_id = users.id").Where("posts.id = ?", id).Order("posts.created_at DESC").Scan(&post).Error; err != nil {
+	if err := db.DB.Table("posts").Select("content, users.name").Joins("join users on posts.user_id = users.id").Where("posts.id = ?", id).Order("posts.created_at DESC").Scan(&post).Error; err != nil {
 		//return 500
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": "Database Error: " + err.Error(),
@@ -91,8 +91,8 @@ func UpdatePost(c echo.Context) error {
 		})
 	}
 
-	post := snsdb.Post{}
-	snsdb.DB.Table("posts").Where("id = ?", id).Find(&post)
+	post := db.Post{}
+	db.DB.Table("posts").Where("id = ?", id).Find(&post)
 	if post.Id == 0 {
 		return c.JSON(http.StatusInternalServerError, echo.Map{
 			"message": "Database Error",
@@ -105,7 +105,7 @@ func UpdatePost(c echo.Context) error {
 	}
 	post.Content = obj.NewContent
 	post.UpdatedAt = time.Now()
-	snsdb.DB.Save(&post)
+	db.DB.Save(&post)
 	return c.JSON(http.StatusOK, post)
 
 }
@@ -123,8 +123,8 @@ func DeletePost(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
-	post := snsdb.Post{}
-	if err := snsdb.DB.Where("id = ?", id).First(&post).Error; err != nil {
+	post := db.Post{}
+	if err := db.DB.Where("id = ?", id).First(&post).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
@@ -143,6 +143,6 @@ func DeletePost(c echo.Context) error {
 			"message": "Unauthorized",
 		})
 	}
-	snsdb.DB.Delete(&post)
+	db.DB.Delete(&post)
 	return c.JSON(http.StatusOK, post)
 }

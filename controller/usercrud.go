@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	snsdb "snsback/db"
+	"snsback/db"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -19,7 +19,7 @@ func CreateUser(c echo.Context) error {
 		Password string `json:"Password"`
 	}
 	obj := Body{}
-	user := snsdb.User{}
+	user := db.User{}
 	if err := c.Bind(&obj); err != nil {
 		//return 400
 		return echo.NewHTTPError(http.StatusBadRequest, "BadRequest")
@@ -28,14 +28,14 @@ func CreateUser(c echo.Context) error {
 	user.UserID = obj.UserID
 	user.Email = obj.Email
 	user.Password = obj.Password
-	snsdb.DB.Create(&user)
+	db.DB.Create(&user)
 	return c.JSON(http.StatusCreated, user)
 }
 
 // 全ユーザーを取得
 func GetUsers(c echo.Context) error {
-	users := []snsdb.User{}
-	snsdb.DB.Find(&users)
+	users := []db.User{}
+	db.DB.Find(&users)
 	return c.JSON(http.StatusOK, users)
 }
 
@@ -49,7 +49,7 @@ func GetUser(c echo.Context) error {
 	user := Body{}
 
 	user.UserID = c.Param("userid")
-	snsdb.DB.Model(&snsdb.User{}).Where("user_id = ?", user.UserID).First(&user)
+	db.DB.Model(&db.User{}).Where("user_id = ?", user.UserID).First(&user)
 
 	return c.JSON(http.StatusOK, user)
 }
@@ -67,10 +67,10 @@ func UpdateUser(c echo.Context) error {
 	if err := c.Bind(&obj); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, "BadRequest")
 	}
-	var user snsdb.User
-	snsdb.DB.Where("email = ?", obj.Email).Where("password = ?", obj.Password).First(&user)
+	var user db.User
+	db.DB.Where("email = ?", obj.Email).Where("password = ?", obj.Password).First(&user)
 
-	snsdb.DB.Model(&user).Updates(snsdb.User{Name: obj.ReName, Email: obj.ReEmail, Password: obj.RePassword})
+	db.DB.Model(&user).Updates(db.User{Name: obj.ReName, Email: obj.ReEmail, Password: obj.RePassword})
 	return c.JSON(http.StatusOK, user)
 }
 
@@ -88,8 +88,8 @@ func Login(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
-	user := snsdb.User{}
-	if err := snsdb.DB.Where("email = ?", obj.Email).First(&user).Error; err != nil {
+	user := db.User{}
+	if err := db.DB.Where("email = ?", obj.Email).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
