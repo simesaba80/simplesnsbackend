@@ -2,14 +2,17 @@ package main
 
 import (
 	"snsback/controller"
-	snsdb "snsback/db"
+	"snsback/db"
+	"snsback/utils/config"
 
 	"github.com/labstack/echo/v4"
 )
 
 func main() {
 	e := echo.New()
-	snsdb.Init()
+
+	config.LoadEnv()
+	db.Init()
 	//usercrud
 	e.GET("/users/getusers", controller.GetUsers)
 	e.GET("/users/getuser/:userid", controller.GetUser)
