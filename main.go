@@ -13,7 +13,7 @@ func main() {
 	//usercrud
 	e.GET("/users/getusers", controller.GetUsers)
 	e.GET("/users/getuser/:userid", controller.GetUser)
-	e.POST("/users/creatuser", controller.CreateUser)
+	e.POST("/users/createuser", controller.CreateUser)
 	e.PUT("/users/updateuser", controller.UpdateUser)
 	e.POST("/users/login", controller.Login)
 	//postcrud
