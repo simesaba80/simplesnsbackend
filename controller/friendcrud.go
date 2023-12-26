@@ -3,7 +3,7 @@ package controller
 import (
 	"net/http"
 
-	snsdb "snsback/db"
+	"snsback/db"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -21,8 +21,8 @@ func SendFollow(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
-	user := snsdb.User{}
-	if err := snsdb.DB.Model(&snsdb.User{}).Where("user_id = ?", obj.UserId).First(&user).Error; err != nil {
+	user := db.User{}
+	if err := db.DB.Model(&db.User{}).Where("user_id = ?", obj.UserId).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
@@ -36,8 +36,8 @@ func SendFollow(c echo.Context) error {
 			})
 		}
 	}
-	frienduser := snsdb.User{}
-	if err := snsdb.DB.Model(&snsdb.User{}).Where("user_id = ?", obj.FriendId).First(&frienduser).Error; err != nil {
+	frienduser := db.User{}
+	if err := db.DB.Model(&db.User{}).Where("user_id = ?", obj.FriendId).First(&frienduser).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
@@ -51,13 +51,13 @@ func SendFollow(c echo.Context) error {
 			})
 		}
 	}
-	friend := snsdb.Friend{}
-	snsdb.DB.Table("friends").Where("user_id = ?", user.Id).Where("friend_id = ?", frienduser.Id).First(&friend)
+	friend := db.Friend{}
+	db.DB.Table("friends").Where("user_id = ?", user.Id).Where("friend_id = ?", frienduser.Id).First(&friend)
 	//フォローしてなかったらフォローする
 	if friend.UserID == 0 && friend.FriendID == 0 {
 		friend.UserID = user.Id
 		friend.FriendID = frienduser.Id
-		snsdb.DB.Create(&friend)
+		db.DB.Create(&friend)
 		return c.JSON(http.StatusOK, friend)
 	}
 	return c.JSON(http.StatusConflict, echo.Map{
@@ -67,8 +67,8 @@ func SendFollow(c echo.Context) error {
 
 func GetFollowList(c echo.Context) error {
 	userid := c.Param("userid")
-	user := snsdb.User{}
-	if err := snsdb.DB.Where("user_id = ?", userid).First(&user).Error; err != nil {
+	user := db.User{}
+	if err := db.DB.Where("user_id = ?", userid).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
@@ -82,8 +82,8 @@ func GetFollowList(c echo.Context) error {
 			})
 		}
 	}
-	friends := []snsdb.Friend{}
-	snsdb.DB.Where("user_id = ?", user.Id).Find(&friends)
+	friends := []db.Friend{}
+	db.DB.Where("user_id = ?", user.Id).Find(&friends)
 	return c.JSON(http.StatusOK, friends)
 }
 
@@ -99,8 +99,8 @@ func DeleteFollow(c echo.Context) error {
 			"message": "Json Format Error: " + err.Error(),
 		})
 	}
-	user := snsdb.User{}
-	if err := snsdb.DB.Model(&snsdb.User{}).Where("user_id = ?", obj.UserId).First(&user).Error; err != nil {
+	user := db.User{}
+	if err := db.DB.Model(&db.User{}).Where("user_id = ?", obj.UserId).First(&user).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
@@ -114,8 +114,8 @@ func DeleteFollow(c echo.Context) error {
 			})
 		}
 	}
-	frienduser := snsdb.User{}
-	if err := snsdb.DB.Model(&snsdb.User{}).Where("user_id = ?", obj.FriendId).First(&frienduser).Error; err != nil {
+	frienduser := db.User{}
+	if err := db.DB.Model(&db.User{}).Where("user_id = ?", obj.FriendId).First(&frienduser).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// return 404
 			return c.JSON(http.StatusNotFound, echo.Map{
@@ -129,16 +129,16 @@ func DeleteFollow(c echo.Context) error {
 			})
 		}
 	}
-	friend := snsdb.Friend{}
-	snsdb.DB.Table("friends").Where("user_id = ?", user.Id).Where("friend_id = ?", frienduser.Id).First(&friend)
+	friend := db.Friend{}
+	db.DB.Table("friends").Where("user_id = ?", user.Id).Where("friend_id = ?", frienduser.Id).First(&friend)
 	if friend.UserID == 0 && friend.FriendID == 0 {
 		friend.UserID = user.Id
 		friend.FriendID = frienduser.Id
-		snsdb.DB.Create(&friend)
+		db.DB.Create(&friend)
 		return c.JSON(http.StatusConflict, echo.Map{
 			"message": "You don't followed",
 		})
 	}
-	snsdb.DB.Delete(&friend)
+	db.DB.Delete(&friend)
 	return c.JSON(http.StatusOK, friend)
 }
