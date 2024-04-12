@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"snsback/cruds"
 	"snsback/db"
 
 	"github.com/labstack/echo/v4"
@@ -19,16 +20,11 @@ func CreateUser(c echo.Context) error {
 		Password string `json:"Password"`
 	}
 	obj := Body{}
-	user := db.User{}
 	if err := c.Bind(&obj); err != nil {
 		//return 400
 		return echo.NewHTTPError(http.StatusBadRequest, "BadRequest")
 	}
-	user.Name = obj.Name
-	user.UserID = obj.UserID
-	user.Email = obj.Email
-	user.Password = obj.Password
-	db.DB.Create(&user)
+	user := cruds.CreateUserByJSON(obj.Name, obj.UserID, obj.Email, obj.Password)
 	return c.JSON(http.StatusCreated, user)
 }
 
