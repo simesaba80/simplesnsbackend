@@ -9,7 +9,7 @@ type User struct { //コメントはDB内のカラム名
 	UserID    string    //user_id
 	Name      string    //name
 	Email     string    //email
-	Password  string    //password
+	Password  string    `json:"-"` //password
 	CreatedAt time.Time //created_at
 	UpdatedAt time.Time //updated_at
 }
