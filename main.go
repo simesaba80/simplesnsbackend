@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"snsback/controller"
 	"snsback/db"
 	"snsback/utils/config"
@@ -13,6 +14,9 @@ func main() {
 
 	config.LoadEnv()
 	db.Init()
+	e.GET("/", func(c echo.Context) error {
+		return c.String(http.StatusOK, "Hello, World!")
+	})
 	//usercrud
 	e.GET("/users/getusers", controller.GetUsers)
 	e.GET("/users/getuser/:userid", controller.GetUser)
